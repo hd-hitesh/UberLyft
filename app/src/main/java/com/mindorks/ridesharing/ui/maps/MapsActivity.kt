@@ -13,10 +13,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.*
 import com.mindorks.ridesharing.R
 import com.mindorks.ridesharing.data.network.NetworkService
+import com.mindorks.ridesharing.utils.MapUtils
 import com.mindorks.ridesharing.utils.PermissionUtils
 import com.mindorks.ridesharing.utils.ViewUtils
 
@@ -32,6 +32,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
     private var fusedLocationProviderClient : FusedLocationProviderClient?= null
     private lateinit var locationCallback: LocationCallback
     private var currentLatLng : LatLng? = null
+    private val nearByCabMarkerList = arrayListOf<Marker>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
     private fun animateCamera(latLng: LatLng?){
         val cameraPosition = CameraPosition.Builder().target(latLng).zoom(15.5f).build()
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    private fun addCarMarkerAndGet(latLng: LatLng) : Marker{
+        val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(MapUtils.getCArBitMap(this))
+        return googleMap.addMarker(MarkerOptions().position(latLng).flat(true).icon(bitmapDescriptor))
     }
 
     private fun enableMyLocationOnMap(){
@@ -77,6 +83,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
                             enableMyLocationOnMap()
                             moveCamera(currentLatLng)
                             animateCamera(currentLatLng)
+                            presenter.requestNearByCab(currentLatLng!!)
                         }
                     }
                 }
@@ -148,5 +155,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
     }
 
     override fun showNearByCabs(latLngList: List<LatLng>) {
+        nearByCabMarkerList.clear()
+        for (latlng in latLngList){
+            val nearByCabMarker = addCarMarkerAndGet(latlng)
+            nearByCabMarkerList.add(nearByCabMarker)
+        }
     }
+
 }
