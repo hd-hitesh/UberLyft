@@ -1,6 +1,7 @@
 package com.mindorks.ridesharing.ui.maps
 
 import android.util.Log
+import android.view.View
 import com.google.android.gms.maps.model.LatLng
 import com.mindorks.ridesharing.data.network.NetworkService
 import com.mindorks.ridesharing.simulator.WebSocket
@@ -49,7 +50,32 @@ class MapsPresenter(private val networkService: NetworkService): WebSocketListen
             Constants.NEAR_BY_CABS -> {
                 handleOnMessageBearByCabs(jsonObject)
             }
+            Constants.CAB_BOOKED ->{
+                view?.informCabBooked()
+            }
+            Constants.PICKUP_PATH, Constants.TRIP_PATH -> {
+                val jsonArray = jsonObject.getJSONArray("path")
+                val pickUpPath = arrayListOf<LatLng>()
+                for (i in 0 until jsonArray.length()) {
+                    val lat = (jsonArray.get(i) as JSONObject).getDouble("lat")
+                    val lng = (jsonArray.get(i) as JSONObject).getDouble("lng")
+                    val latLng = LatLng(lat, lng)
+                    pickUpPath.add(latLng)
+                }
+                view?.showPath(pickUpPath)
+            }
         }
+    }
+
+    fun requestCab(pickupLatLng: LatLng, dropLatLng: LatLng ){
+        val jsonObject = JSONObject()
+        jsonObject.put(Constants.TYPE,Constants.REQUEST_CAB)
+        jsonObject.put("pickUpLat",pickupLatLng.latitude)
+        jsonObject.put("pickUpLng",pickupLatLng.longitude)
+        jsonObject.put("dropUpLat",dropLatLng.latitude)
+        jsonObject.put("dropUpLng",dropLatLng.longitude)
+        webSocket.sendMessage(jsonObject.toString())
+
     }
 
     private fun handleOnMessageBearByCabs(jsonObject: JSONObject) {
