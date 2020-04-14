@@ -2,13 +2,15 @@ package com.mindorks.ridesharing.utils
 
 object Constants {
 
+
+    const val REQUEST_CAB = "requestCab"
     const val TYPE = "type"
     const val NEAR_BY_CABS = "nearByCabs"
-    const val LOCATIONS = "locations"
-    const val REQUEST_CAB = "requestCab"
     const val CAB_BOOKED = "cabBooked"
     const val PICKUP_PATH = "pickUpPath"
     const val TRIP_PATH = "tripPath"
+    const val LOCATIONS = "locations"
+    const val LOCATION = "location"
     const val CAB_IS_ARRIVING = "cabIsArriving"
     const val CAB_ARRIVED = "cabArrived"
     const val TRIP_START = "tripStart"
