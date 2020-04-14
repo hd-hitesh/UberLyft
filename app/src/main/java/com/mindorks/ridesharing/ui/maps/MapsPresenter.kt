@@ -14,7 +14,7 @@ import kotlin.math.ln
 class MapsPresenter(private val networkService: NetworkService): WebSocketListener {
 
     companion object{
-        private val TAG = "MapsPresenter"
+        private const val TAG = "MapsPresenter"
     }
 
     private var view: MapsView? = null
@@ -72,8 +72,8 @@ class MapsPresenter(private val networkService: NetworkService): WebSocketListen
         jsonObject.put(Constants.TYPE,Constants.REQUEST_CAB)
         jsonObject.put("pickUpLat",pickupLatLng.latitude)
         jsonObject.put("pickUpLng",pickupLatLng.longitude)
-        jsonObject.put("dropUpLat",dropLatLng.latitude)
-        jsonObject.put("dropUpLng",dropLatLng.longitude)
+        jsonObject.put("dropLat",dropLatLng.latitude)
+        jsonObject.put("dropLng",dropLatLng.longitude)
         webSocket.sendMessage(jsonObject.toString())
 
     }

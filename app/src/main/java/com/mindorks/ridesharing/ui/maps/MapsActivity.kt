@@ -35,8 +35,8 @@ import kotlinx.android.synthetic.main.activity_maps.*
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
 
     companion object{
-        private val TAG = "MapsActivity"
-        private val LOCATION_PERMISSION_REQUEST_CODE= 999
+        private const val TAG = "MapsActivity"
+        private const val LOCATION_PERMISSION_REQUEST_CODE= 999
         private const val PICKUP_REQUEST_CODE = 1
         private const val DROP_REQUEST_CODE = 2
     }
@@ -238,7 +238,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
     }
 
     private fun checkAndShowRequestButton(){
-        if (pickUpLatLng!=null && dropLatLng!=null){
+        if (pickUpLatLng != null && dropLatLng != null){
             requestCabButton.visibility = View.VISIBLE
             requestCabButton.isEnabled = true
         }
@@ -251,8 +251,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
 
     override fun showNearByCabs(latLngList: List<LatLng>) {
         nearByCabMarkerList.clear()
-        for (latlng in latLngList){
-            val nearByCabMarker = addCarMarkerAndGet(latlng)
+        for (latLng in latLngList){
+            val nearByCabMarker = addCarMarkerAndGet(latLng)
             nearByCabMarkerList.add(nearByCabMarker)
         }
     }
