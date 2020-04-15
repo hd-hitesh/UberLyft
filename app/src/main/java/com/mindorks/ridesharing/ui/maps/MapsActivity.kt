@@ -87,7 +87,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
             dropTextView.isEnabled = false
             presenter.requestCab(pickUpLatLng!!,dropLatLng!!)
         }
+        nextRideButton.setOnClickListener {
+            reset()
+        }
     }
+
     private fun launchLocationAutoCompleteActivity(requestCode: Int) {
         val fields: List<Place.Field> =
             listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
@@ -160,6 +164,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+    }
+
+    private fun reset() {
+            statusTextView.visibility = View.GONE
+            nextRideButton.visibility = View.GONE
+            nearByCabMarkerList.forEach { it.remove() }
+            nearByCabMarkerList.clear()
+            previousLatLngFromServer = null
+            currentLatLngFromServer = null
+            if (currentLatLng != null) {
+                moveCamera(currentLatLng)
+                animateCamera(currentLatLng)
+                setCurrentLocationAsPickUp()
+                presenter.requestNearByCab(currentLatLng!!)
+            } else {
+                pickUpTextView.text = ""
+            }
+            pickUpTextView.isEnabled = true
+            dropTextView.isEnabled = true
+            dropTextView.text = ""
+            movingCabMarker?.remove()
+            greyPolyline?.remove()
+            blackPolyline?.remove()
+            originMarker?.remove()
+            destinationMarker?.remove()
+            dropLatLng = null
+            greyPolyline = null
+            blackPolyline = null
+            originMarker = null
+            destinationMarker = null
+            movingCabMarker = null
     }
 
     override fun onStart() {
@@ -250,6 +285,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
 
     override fun onDestroy() {
         presenter.onDetach()
+        fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
         super.onDestroy()
     }
 
@@ -361,5 +397,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsView {
         blackPolyline?.remove()
         originMarker?.remove()
         destinationMarker?.remove()
+    }
+
+    override fun showRoutesNotAvailableError() {
+        val error = getString(R.string.route_not_available_choose_different_locations)
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        reset()
+    }
+
+    override fun showDirectionApiFailedError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        reset()
     }
 }
