@@ -75,6 +75,12 @@ class MapsPresenter(private val networkService: NetworkService): WebSocketListen
             Constants.CAB_ARRIVED -> {
                 view?.informCabArrived()
             }
+            Constants.TRIP_START -> {
+                view?.informTripStart()
+            }
+            Constants.TRIP_END -> {
+                view?.informTripEnd()
+            }
         }
     }
 
